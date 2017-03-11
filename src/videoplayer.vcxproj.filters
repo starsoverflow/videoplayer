@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="AudioFilter">
+      <UniqueIdentifier>{1a3e828d-0b86-426b-81b5-e3482a9a3b84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DShowUtils">
+      <UniqueIdentifier>{d591b25e-87ee-40c1-b13b-457038fbfcc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EVRPresenter">
+      <UniqueIdentifier>{5d44fe89-762d-4d6e-867e-71bcab144e28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VideoPlayer">
+      <UniqueIdentifier>{447c6193-7f93-4834-ba80-5c23ab82a425}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VideoPlayer\Source Files">
+      <UniqueIdentifier>{74f6ac25-8619-4691-940d-a4c748631df1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VideoPlayer\Header Files">
+      <UniqueIdentifier>{55610502-3ada-41c7-a47f-41d64e10dd9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VideoPlayer\DUIAdditional">
+      <UniqueIdentifier>{02a94160-8eb8-4be7-b7b7-20ad0e67fabb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="EVRPresenter\PresentEngine.cpp">
+      <Filter>EVRPresenter</Filter>
+    </ClCompile>
+    <ClCompile Include="EVRPresenter\Presenter.cpp">
+      <Filter>EVRPresenter</Filter>
+    </ClCompile>
+    <ClCompile Include="EVRPresenter\SamplePool.cpp">
+      <Filter>EVRPresenter</Filter>
+    </ClCompile>
+    <ClCompile Include="EVRPresenter\scheduler.cpp">
+      <Filter>EVRPresenter</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoPlayer\DragListUI.cpp">
+      <Filter>VideoPlayer\DUIAdditional</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoPlayer\MenuUI.cpp">
+      <Filter>VideoPlayer\DUIAdditional</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoPlayer\ControlsWindow.cpp">
+      <Filter>VideoPlayer\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoPlayer\DragDrop.cpp">
+      <Filter>VideoPlayer\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoPlayer\msg.cpp">
+      <Filter>VideoPlayer\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoPlayer\MyMenu.cpp">
+      <Filter>VideoPlayer\DUIAdditional</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoPlayer\PlayListWindow.cpp">
+      <Filter>VideoPlayer\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoPlayer\svplreader.cpp">
+      <Filter>VideoPlayer\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoPlayer\WindowUI.cpp">
+      <Filter>VideoPlayer\DUIAdditional</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoPlayer\VideoWindow.cpp">
+      <Filter>VideoPlayer\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoPlayer\svplwriter.cpp">
+      <Filter>VideoPlayer\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoPlayer\VideoCommon.cpp">
+      <Filter>VideoPlayer\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="entry.cpp" />
+    <ClCompile Include="VideoPlayer\MultiLineLabelUI.cpp">
+      <Filter>VideoPlayer\DUIAdditional</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="EVRPresenter\autolock.h">
+      <Filter>EVRPresenter</Filter>
+    </ClInclude>
+    <ClInclude Include="EVRPresenter\critsec.h">
+      <Filter>EVRPresenter</Filter>
+    </ClInclude>
+    <ClInclude Include="EVRPresenter\EVRPresenter.h">
+      <Filter>EVRPresenter</Filter>
+    </ClInclude>
+    <ClInclude Include="EVRPresenter\Helpers.h">
+      <Filter>EVRPresenter</Filter>
+    </ClInclude>
+    <ClInclude Include="EVRPresenter\linklist.h">
+      <Filter>EVRPresenter</Filter>
+    </ClInclude>
+    <ClInclude Include="EVRPresenter\MFClasses.h">
+      <Filter>EVRPresenter</Filter>
+    </ClInclude>
+    <ClInclude Include="EVRPresenter\PresentEngine.h">
+      <Filter>EVRPresenter</Filter>
+    </ClInclude>
+    <ClInclude Include="EVRPresenter\Presenter.h">
+      <Filter>EVRPresenter</Filter>
+    </ClInclude>
+    <ClInclude Include="EVRPresenter\resource.h">
+      <Filter>EVRPresenter</Filter>
+    </ClInclude>
+    <ClInclude Include="EVRPresenter\SamplePool.h">
+      <Filter>EVRPresenter</Filter>
+    </ClInclude>
+    <ClInclude Include="EVRPresenter\scheduler.h">
+      <Filter>EVRPresenter</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoPlayer\DragListUI.h">
+      <Filter>VideoPlayer\DUIAdditional</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoPlayer\MenuUI.h">
+      <Filter>VideoPlayer\DUIAdditional</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoPlayer\ControlsWindow.h">
+      <Filter>VideoPlayer\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoPlayer\DragDrop.h">
+      <Filter>VideoPlayer\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoPlayer\lavclsid.h">
+      <Filter>VideoPlayer\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoPlayer\msg.h">
+      <Filter>VideoPlayer\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoPlayer\MyMenu.h">
+      <Filter>VideoPlayer\DUIAdditional</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoPlayer\svplreader.h">
+      <Filter>VideoPlayer\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoPlayer\WindowUI.h">
+      <Filter>VideoPlayer\DUIAdditional</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoPlayer\PlayListWindow.h">
+      <Filter>VideoPlayer\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoPlayer\svplwriter.h">
+      <Filter>VideoPlayer\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoPlayer\VideoWindow.h">
+      <Filter>VideoPlayer\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoPlayer\VideoCommon.h">
+      <Filter>VideoPlayer\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="entry.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="VideoPlayer\mydebug.h" />
+    <ClInclude Include="DShowUtils\common\dshowutil.h">
+      <Filter>DShowUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoPlayer\Utils.h">
+      <Filter>VideoPlayer\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoPlayer\MultiLineLabelUI.h">
+      <Filter>VideoPlayer\DUIAdditional</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="videoplayer.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="videoplayer.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Skin.zip">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
+</Project>
