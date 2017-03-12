@@ -1,0 +1,18 @@
+# 此文件定义拖拽时允许加入播放列表的文件后缀名
+avi
+mpg
+mpeg
+mp4
+mpeg4
+flv
+aac
+mp3
+wma
+ape
+flac
+wav
+ogg
+wmv
+mkv
+rm
+rmvb
