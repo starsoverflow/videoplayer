@@ -67,6 +67,6 @@ namespace Star_VideoPlayer
 
 		void KillScrollTimer();
 	private:
-		static void CALLBACK TimerProc(HWND hWnd, UINT uMsg, UINT idEvent, DWORD dwTime);
+		static void CALLBACK TimerProc(HWND hWnd, UINT_PTR uMsg, UINT idEvent, DWORD dwTime);
 	};
 }

@@ -103,7 +103,7 @@ namespace Star_VideoPlayer
 
 	}
 
-	void DragListUI::TimerProc(HWND hWnd, UINT uMsg, UINT idEvent, DWORD dwTime)
+	void DragListUI::TimerProc(HWND hWnd, UINT_PTR uMsg, UINT idEvent, DWORD dwTime)
 	{
 		if (pScrollTimerData != nullptr)
 		{

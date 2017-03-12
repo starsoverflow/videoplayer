@@ -22,7 +22,7 @@ namespace Star_VideoPlayer
 	{
 		std::wstring ret = sFull;
 		string_replace(ret, L"/", L"\\");   // 转换成正规格式
-		int pos = ret.find_last_of(L"\\");
+		size_t pos = ret.find_last_of(L"\\");
 		if (pos >= 0) ret = ret.substr(pos + 1);
 		pos = ret.find_last_of(L".");
 		if (pos >= 0) ret = ret.substr(0, pos);

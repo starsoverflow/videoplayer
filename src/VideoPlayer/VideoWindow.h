@@ -57,7 +57,7 @@ namespace Star_VideoPlayer
 
 		void PauseClip();
 		void StopClip();
-		void OpenClip(int index);
+		int  OpenClip(int index);
 		void OpenClip(LPCTSTR szFilename);
 
 		void PlayPrev();

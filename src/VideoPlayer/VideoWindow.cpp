@@ -144,9 +144,11 @@ namespace Star_VideoPlayer
 		RegisterHotkey();
 
 		m_psCurrent = Stopped;
-		InvalidateRect(m_hwnd, nullptr, false);
-
+		
 		OpenClip(m_nowplaying);
+
+		ResizeWindow(RectGetWidth(m_rcVideo) + 1, RectGetHeight(m_rcVideo));
+		ResizeWindow(RectGetWidth(m_rcVideo) - 1, RectGetHeight(m_rcVideo));
 
 		return 0;
 	}
@@ -1193,7 +1195,7 @@ namespace Star_VideoPlayer
 		JIF(pGB->QueryInterface(IID_IMediaSeeking, (void **)&pMS));
 		JIF(pGB->QueryInterface(IID_IMediaPosition, (void **)&pMP));
 		JIF(pGB->QueryInterface(IID_IBasicAudio, (void **)&pBA));
-
+		
 		{
 			SIZE lSize = { -100, -100 };
 
@@ -1241,6 +1243,7 @@ namespace Star_VideoPlayer
 		SetStartStopPosition(StartPos, EndPos);
 
 		JIF(pMC->Run());
+
 		m_psCurrent = Running;
 
 	ret:
@@ -1292,7 +1295,7 @@ namespace Star_VideoPlayer
 				RECT rcDest;
 				GetClientRect(m_hwnd, &rcDest);
 				hr = m_pDisplay->SetVideoPosition(NULL, &rcDest);
-
+				_trace(L"rcDest:%d, %d", rcDest.bottom, rcDest.right);
 				GetWindowRect(m_hwnd, &m_rcVideo);
 			}
 			else
@@ -1377,16 +1380,17 @@ namespace Star_VideoPlayer
 		if (m_cCon) m_cCon->m_SliderPlayProcess->SetValue(0);
 	}
 
-	void CVideoWindow::OpenClip(int index)
+	int CVideoWindow::OpenClip(int index)
 	{
 		if (m_bBeginFromFirst)
 		{
 			index = 0;
 			m_bBeginFromFirst = false;
 		}
-		if (index < 0 || index >= (int)m_svplwrapper->GetItemNum(m_nowplaylist)) return;
+		if (index < 0 || index >= (int)m_svplwrapper->GetItemNum(m_nowplaylist)) return -1;
 		m_nowplaying = index;
 		OpenClip(m_svplwrapper->GetItem(m_nowplaylist, index).path.c_str());
+		return 0;
 	}
 
 	void CVideoWindow::OpenClip(LPCTSTR szFilename)
