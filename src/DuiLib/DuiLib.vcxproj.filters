@@ -282,4 +282,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Utils\flash11.tlh">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="Utils\Flash11.tlb">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
 </Project>

@@ -14,7 +14,7 @@
     <ProjectGuid>{4C6DEACF-430B-4498-A713-6E32A3DD98D5}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>videoplayer</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

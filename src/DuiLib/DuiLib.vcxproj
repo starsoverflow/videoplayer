@@ -18,7 +18,7 @@
     <ProjectGuid>{1A879C83-7FAC-485B-8F94-0414EF6C5BB4}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>DuiLib</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -219,6 +219,10 @@
     <ClCompile Include="Utils\Utils.cpp" />
     <ClCompile Include="Utils\WinImplBase.cpp" />
     <ClCompile Include="Utils\XUnzip.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Utils\Flash11.tlb" />
+    <None Include="Utils\flash11.tlh" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
