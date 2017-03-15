@@ -2025,6 +2025,9 @@ HRESULT EVRCustomPresenter::ProcessOutput()
   // If the clock is not running, we present the first sample,
   // and then don't present any more until the clock starts.
 
+  // added by star.
+  if (m_RenderState != RENDER_STATE_STARTED && m_RenderState != RENDER_STATE_PAUSED) return S_FALSE;
+
   if ((m_RenderState != RENDER_STATE_STARTED) &&  // Not running.
     !m_bRepaint &&             // Not a repaint request.
     m_bPrerolled               // At least one sample has been presented.
@@ -2344,7 +2347,8 @@ void EVRCustomPresenter::ReleaseResources()
 
   m_TokenCounter++;
 
-  Flush();
+  // deleted by star.
+  //Flush();
 
   m_SamplePool.Clear();
 

@@ -22,7 +22,6 @@
 
 namespace Star_VideoPlayer
 {
-
 	CVideoWindow::CVideoWindow(wstring appPath, wstring playlistPath)
 		: m_strAppPath(appPath),
 		  m_strPlaylistFile(playlistPath)
@@ -146,10 +145,7 @@ namespace Star_VideoPlayer
 		m_psCurrent = Stopped;
 		
 		OpenClip(m_nowplaying);
-
-		ResizeWindow(RectGetWidth(m_rcVideo) + 1, RectGetHeight(m_rcVideo));
-		ResizeWindow(RectGetWidth(m_rcVideo) - 1, RectGetHeight(m_rcVideo));
-
+		
 		return 0;
 	}
 
@@ -1140,14 +1136,13 @@ namespace Star_VideoPlayer
 
 		JIF(evrcp->QueryInterface(&m_pDisplay));
 		JIF(m_pDisplay->SetVideoWindow(m_hwnd));
-		
+
 		if (m_bFullScreen || m_keepwidth == 0) m_pDisplay->SetAspectRatioMode(NoStretch);
 		else m_pDisplay->SetAspectRatioMode(Stretch);
 		COLORREF border = m_svplwrapper->Get()->config.borderColor;
 		if (border != 0) m_pDisplay->SetBorderColor(border);
 
 		JIF(FindUnconnectedPin(pLavVideoDecoder, PINDIR_INPUT, &pPinVideoInput));
-
 		hr = pGB->ConnectDirect(pPinVideo, pPinVideoInput, NULL);
 
 		if (FAILED(hr)) {
@@ -1164,12 +1159,11 @@ namespace Star_VideoPlayer
 			IPin *pIn = nullptr;
 			hr = FindUnconnectedPin(pEVR, PINDIR_INPUT, &pIn);
 			IPin *pOut = nullptr;
-			hr = FindUnconnectedPin(pLavVideoDecoder, PINDIR_OUTPUT, &pOut);
-			hr = pGB->ConnectDirect(pOut, pIn, nullptr);
+			if (SUCCEEDED(hr)) hr = FindUnconnectedPin(pLavVideoDecoder, PINDIR_OUTPUT, &pOut);
+			if (SUCCEEDED(hr)) hr = pGB->ConnectDirect(pOut, pIn, nullptr);
 			SAFE_RELEASE(pIn);
 			SAFE_RELEASE(pOut);
-
-			//JIF(ConnectFilters(pGB, pLavVideoDecoder, pEVR));
+			if (FAILED(hr)) goto ret;
 		}
 
 
