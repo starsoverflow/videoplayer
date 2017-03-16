@@ -156,7 +156,7 @@
     </ClInclude>
     <ClInclude Include="entry.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="VideoPlayer\mydebug.h" />
+    <ClInclude Include="mydebug.h" />
     <ClInclude Include="DShowUtils\common\dshowutil.h">
       <Filter>DShowUtils</Filter>
     </ClInclude>

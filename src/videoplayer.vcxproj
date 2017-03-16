@@ -130,7 +130,7 @@
     <ClInclude Include="VideoPlayer\lavclsid.h" />
     <ClInclude Include="VideoPlayer\MenuUI.h" />
     <ClInclude Include="VideoPlayer\msg.h" />
-    <ClInclude Include="VideoPlayer\mydebug.h" />
+    <ClInclude Include="mydebug.h" />
     <ClInclude Include="VideoPlayer\MyMenu.h" />
     <ClInclude Include="VideoPlayer\PlayListWindow.h" />
     <ClInclude Include="VideoPlayer\svplreader.h" />
