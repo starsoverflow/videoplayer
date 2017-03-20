@@ -80,6 +80,7 @@
     <ClCompile Include="VideoPlayer\MultiLineLabelUI.cpp">
       <Filter>VideoPlayer\DUIAdditional</Filter>
     </ClCompile>
+    <ClCompile Include="cmdLine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EVRPresenter\autolock.h">
@@ -166,6 +167,7 @@
     <ClInclude Include="VideoPlayer\MultiLineLabelUI.h">
       <Filter>VideoPlayer\DUIAdditional</Filter>
     </ClInclude>
+    <ClInclude Include="cmdLine.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="videoplayer.rc">

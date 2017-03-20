@@ -483,7 +483,7 @@ HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
 			// Calculate the destination.
 			double scalesrc = (double)m_rcBackScreen.right / (double)m_rcBackScreen.bottom;
 			double scaledest = (double)m_rcDestRect.right / (double)m_rcDestRect.bottom;
-			if (scalesrc - scaledest > 0.001)
+			if (scalesrc - scaledest > 0.01)
 			{
 				rcDest.left = 0;
 				rcDest.right = m_rcDestRect.right;
@@ -492,7 +492,7 @@ HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
 				rcDest.bottom = rcDest.top + newheight;
 				TempSurfaceRequied = true;
 			}
-			else if (scalesrc - scaledest < -0.001)
+			else if (scalesrc - scaledest < -0.01)
 			{
 				rcDest.top = 0;
 				rcDest.bottom = m_rcDestRect.bottom;

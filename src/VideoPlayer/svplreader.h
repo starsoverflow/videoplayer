@@ -89,6 +89,8 @@ namespace Star_VideoPlayer
 		POINT location = { 100,100 };
 		POINT size = { 0 };
 		DWORD borderColor = 0;
+		POINT windowAspectRatio = { 0 };  // 定义是否强制显示边框并且保持窗口长宽比（长由size决定），仅在keepwidth为0时有效。
+		                                  // Note: 对showBorder无需额外处理。
 	};
 
 	// 存储播放列表数据

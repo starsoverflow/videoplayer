@@ -20,6 +20,8 @@
 #define DEFAULT_HEIGHT    450
 #define MINIMUM_WIDTH     480
 #define MINIMUM_HEIGHT    270
+#define MAXIMUM_WIDTH     4096
+#define MAXIMUM_HEIGHT    2160
 #define DEFAULT_SCALE     double(DEFAULT_WIDTH.0/DEFAULT_HEIGHT.0)
 
 namespace Star_VideoPlayer
@@ -146,6 +148,7 @@ namespace Star_VideoPlayer
 		IMFVideoDisplayControl *m_pDisplay = nullptr;
 
 		int m_keepwidth = 0;                 // 
+		POINT m_windowAspectRatio = { 0 };   // 保持指定的窗口横纵比
 
 		wstring m_strPlaylistFile;           // 当前加载的播放列表文件
 		wstring m_strMediaFile;              // 当前正在播放的视频路径

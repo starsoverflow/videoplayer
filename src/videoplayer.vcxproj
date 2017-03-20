@@ -90,6 +90,7 @@
     </BuildLog>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cmdLine.cpp" />
     <ClCompile Include="entry.cpp" />
     <ClCompile Include="EVRPresenter\PresentEngine.cpp" />
     <ClCompile Include="EVRPresenter\Presenter.cpp" />
@@ -110,6 +111,7 @@
     <ClCompile Include="VideoPlayer\WindowUI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cmdLine.h" />
     <ClInclude Include="DShowUtils\common\dshowutil.h" />
     <ClInclude Include="entry.h" />
     <ClInclude Include="EVRPresenter\autolock.h" />

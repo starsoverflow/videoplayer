@@ -79,6 +79,7 @@ namespace Star_VideoPlayer
 			m_nowplaylist = rsvpl->config.normalplaylist;
 			m_nowplaying = rsvpl->playlists.at(m_nowplaylist).currentindex;
 			m_keepwidth = rsvpl->playlists.at(m_nowplaylist).keepwidth;
+			m_windowAspectRatio = rsvpl->config.windowAspectRatio;
 		}
 		catch (...) {
 			_trace(L"This can't happen in videowindow.cpp line %d", __LINE__);
@@ -87,14 +88,26 @@ namespace Star_VideoPlayer
 		
 		if (m_keepwidth != 0)
 		{
-			if (m_keepwidth < MINIMUM_WIDTH) m_keepwidth = DEFAULT_WIDTH;
+			if (m_keepwidth < MINIMUM_WIDTH || m_keepwidth > MAXIMUM_WIDTH) m_keepwidth = DEFAULT_WIDTH;
 			width = m_keepwidth;
 			height = int(m_keepwidth / DEFAULT_SCALE);
 		}
 		else
 		{
+			if (rsvpl->config.size.x < MINIMUM_WIDTH || rsvpl->config.size.x > MAXIMUM_WIDTH) rsvpl->config.size.x = DEFAULT_WIDTH;
 			width = rsvpl->config.size.x;
 			height = rsvpl->config.size.y;
+		}
+
+		if (m_windowAspectRatio.x && m_windowAspectRatio.y)
+		{
+			height = width * m_windowAspectRatio.y / m_windowAspectRatio.x;
+			if (height < MINIMUM_HEIGHT || height > MAXIMUM_HEIGHT)
+			{
+				m_windowAspectRatio = { 16, 9 };
+				height = width * m_windowAspectRatio.y / m_windowAspectRatio.x;
+				SHOWMSG(MsgIcon::Exclamation, "Your request of Window's Aspect Ratio was rejected.\nCheck your playlist file.\nThe default setting 16:9 was applied.");
+			}
 		}
 
 		if (width < MINIMUM_WIDTH || height < MINIMUM_HEIGHT)
@@ -341,6 +354,7 @@ namespace Star_VideoPlayer
 		{
 		case WM_CONTEXTMENU:
 		{
+			if (m_bCapture) break;
 			m_bInMenu = true;
 			MyShowCursor(true);
 			POINT point;
@@ -706,23 +720,24 @@ namespace Star_VideoPlayer
 
 		case WM_SIZING:
 		{
-			if (m_keepwidth)
+			if (m_keepwidth || (m_windowAspectRatio.x && m_windowAspectRatio.y))
 			{
+				double scale = m_keepwidth ? m_dScale : (double)m_windowAspectRatio.x / m_windowAspectRatio.y;
 				LPRECT pRect = (LPRECT)lParam;
 				switch (wParam) {
 				case WMSZ_BOTTOMLEFT:
 				case WMSZ_BOTTOMRIGHT:
 				case WMSZ_LEFT:
 				case WMSZ_RIGHT:
-					pRect->bottom = (long)(pRect->top + (pRect->right - pRect->left) / m_dScale);
+					pRect->bottom = (long)(pRect->top + (pRect->right - pRect->left) / scale);
 					break;
 				case WMSZ_TOPLEFT:
 				case WMSZ_TOPRIGHT:
-					pRect->top = (long)(pRect->bottom - (pRect->right - pRect->left) / m_dScale);
+					pRect->top = (long)(pRect->bottom - (pRect->right - pRect->left) / scale);
 					break;
 				case WMSZ_TOP:
 				case WMSZ_BOTTOM:
-					pRect->right = (long)((pRect->bottom - pRect->top) * m_dScale + pRect->left);
+					pRect->right = (long)((pRect->bottom - pRect->top) * scale + pRect->left);
 					break;
 				}
 				return TRUE;
@@ -1264,18 +1279,22 @@ namespace Star_VideoPlayer
 
 	HRESULT CVideoWindow::InitVideoWindow(SIZE lSize)
 	{
-		LONG lHeight, lWidth;
+		long lHeight, lWidth;
 		HRESULT hr = S_OK;
 		if (!m_pDisplay) return S_OK;
 
 		if (hr == E_NOINTERFACE) return S_OK;
 		lHeight = lSize.cy;
 		lWidth = lSize.cx;
-
+		
 		m_dScale = (double)lWidth / (double)lHeight;  // 存储视频横纵比信息
 		if (m_keepwidth != 0) {
 			lWidth = m_keepwidth;
-			lHeight = (LONG)((double)lWidth / m_dScale);
+			lHeight = (long)((double)lWidth / m_dScale);
+		}
+		else if (m_windowAspectRatio.x != 0 && m_windowAspectRatio.y != 0) {
+			lWidth = RectGetWidth(m_rcVideo);
+			lHeight = (long)((double)lWidth * m_windowAspectRatio.y / m_windowAspectRatio.x);
 		}
 		else {
 			lWidth = RectGetWidth(m_rcVideo);
@@ -1289,7 +1308,6 @@ namespace Star_VideoPlayer
 				RECT rcDest;
 				GetClientRect(m_hwnd, &rcDest);
 				hr = m_pDisplay->SetVideoPosition(NULL, &rcDest);
-				_trace(L"rcDest:%d, %d", rcDest.bottom, rcDest.right);
 				GetWindowRect(m_hwnd, &m_rcVideo);
 			}
 			else
@@ -1766,6 +1784,7 @@ namespace Star_VideoPlayer
 		m_nowplaylist = rsvpl->config.normalplaylist;
 		m_keepwidth = rsvpl->playlists.at(m_nowplaylist).keepwidth;
 		m_iVolume = rsvpl->playlists.at(m_nowplaylist).volume;
+		m_windowAspectRatio = rsvpl->config.windowAspectRatio;
 		if (m_cCon)
 		{
 			m_cCon->GetPlayListWindow()->Refresh();

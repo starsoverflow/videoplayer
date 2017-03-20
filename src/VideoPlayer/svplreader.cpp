@@ -141,8 +141,6 @@ namespace Star_VideoPlayer
 		// Check validity
 		if (svpldest->config.normalplaylist < 0) return -2;
 		if (svpldest->config.normalplaylist >= (int)svpldest->playlists.size()) return -2;
-		if (svpldest->playlists.at(svpldest->config.normalplaylist).currentindex < 0) return -2;
-		if (svpldest->playlists.at(svpldest->config.normalplaylist).currentindex >= (int)svpldest->playlists.at(svpldest->config.normalplaylist).items.size()) return -2;
 		if (svpldest->config.mousehidetime <= 0) return -2;
 		return 0;
 	}
@@ -157,15 +155,22 @@ namespace Star_VideoPlayer
 			}
 			else value = value + s[i];
 		}
-		if (attribute == L"normalplaylist") svpldest->config.normalplaylist = _wtoi(value.c_str());
-		if (attribute == L"mousehidetime") svpldest->config.mousehidetime = _wtoi(value.c_str());
-		if (attribute == L"alwaystop")
+		transform(attribute.begin(), attribute.end(), attribute.begin(), ::tolower);
+		if (attribute == L"normalplaylist" || attribute == L"defaultplaylist")
 		{
-			transform(value.begin(), value.end(), value.begin(), ::toupper);
-			if (value == L"TRUE") svpldest->config.alwaystop = true;
+			svpldest->config.normalplaylist = _wtoi(value.c_str());
+		}
+		else if (attribute == L"mousehidetime" || attribute == L"hidecursortimeout")
+		{
+			svpldest->config.mousehidetime = _wtoi(value.c_str());
+		}
+		else if (attribute == L"alwaystop" || attribute == L"alwaysontop")
+		{
+			transform(value.begin(), value.end(), value.begin(), ::tolower);
+			if (value == L"true") svpldest->config.alwaystop = true;
 			else svpldest->config.alwaystop = false;
 		}
-		if (attribute == L"location")
+		else if (attribute == L"location")
 		{
 			size_t wh = value.find_first_of(L',');
 			if (wh != wstring::npos)
@@ -174,7 +179,7 @@ namespace Star_VideoPlayer
 				svpldest->config.location.y = _wtoi(value.substr(wh + 1).c_str());
 			}
 		}
-		if (attribute == L"size")
+		else if (attribute == L"size")
 		{
 			size_t wh = value.find_first_of(L',');
 			if (wh != wstring::npos)
@@ -183,9 +188,18 @@ namespace Star_VideoPlayer
 				svpldest->config.size.y = _wtoi(value.substr(wh + 1).c_str());
 			}
 		}
-		if (attribute == L"bordercolor")
+		else if (attribute == L"bordercolor")
 		{
 			svpldest->config.borderColor = wcstol(value.c_str(), nullptr, 16);
+		}
+		else if (attribute == L"windowaspectratio")
+		{
+			size_t wh = value.find_first_of(L':');
+			if (wh != wstring::npos)
+			{
+				svpldest->config.windowAspectRatio.x = _wtoi(value.substr(0, wh).c_str());
+				svpldest->config.windowAspectRatio.y = _wtoi(value.substr(wh + 1).c_str());
+			}
 		}
 	}
 
