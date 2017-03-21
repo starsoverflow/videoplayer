@@ -8,6 +8,8 @@
 #include "DragDrop.h"
 #include "../EVRPresenter/EVRPresenter.h"
 
+#include "../ScopeGuard.h"
+
 #include <gdiplus.h>
 
 #define MyClassName _T("Star Video Player_Video Window")
@@ -847,25 +849,45 @@ namespace Star_VideoPlayer
 			if (wParam != 0xffff || lParam != 0xffff) break;
 			HANDLE hMap = OpenFileMappingW(FILE_MAP_ALL_ACCESS, 0, L"Local\\videopl{52DC5C06-AAA4-46C5-B753-3BC8E28099B1}");
 			if (hMap == nullptr) return -1;
+			ON_SCOPE_EXIT([hMap] { CloseHandle(hMap); });
 			wchar_t* pbuf = (wchar_t*)MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, 0, 0, 2048);
 			if (pbuf == nullptr) return -1;
+			ON_SCOPE_EXIT([pbuf] { UnmapViewOfFile(pbuf); });
 			svpl_item newItem;
 			newItem.path = pbuf;
-			UnmapViewOfFile(pbuf);
-			CloseHandle(hMap);
 			m_svplwrapper->AddItem(newItem, m_nowplaylist);
 			if (m_cCon) m_cCon->GetPlayListWindow()->Refresh();
 			break;
 		}
 
-		case WM_ReloadSettings:
+		case WM_ReloadPlaylist:
 		{
-			// TODO:
-			/*
-			shared_ptr<svplwrapper> new_svplwrapper(new svplwrapper((wchar_t*)wParam));
+			if (lParam != 0xffff) break;
+			HANDLE hMap = OpenFileMappingW(FILE_MAP_ALL_ACCESS, 0, L"Local\\videopl{52DC5C06-AAA4-46C5-B753-3BC8E28099B1}");
+			if (hMap == nullptr) return -1;
+			ON_SCOPE_EXIT([hMap] { CloseHandle(hMap); });
+			wchar_t* pbuf = (wchar_t*)MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, 0, 0, 2048);
+			if (pbuf == nullptr) return -1;
+			ON_SCOPE_EXIT([pbuf] { UnmapViewOfFile(pbuf); });
+			shared_ptr<svplwrapper> new_svplwrapper(new svplwrapper(pbuf));
 			if (new_svplwrapper->parserStatus != 0) return new_svplwrapper->parserStatus;
 			SetNewWrapper(new_svplwrapper);
-			*/
+			if (wParam == 1)
+			{
+				double pos = 0.0;
+				GetCurrentPosition(&pos);
+				OpenClip(m_nowplaying);
+				SetCurrentPosition(pos);
+			}
+			else if (wParam == 2)
+			{
+				OpenClip(m_nowplaying);
+			}
+			else if (wParam == 3)
+			{
+				m_bBeginFromFirst = true;
+				OpenClip(m_nowplaying);
+			}
 			break;
 		}
 
@@ -1155,6 +1177,8 @@ namespace Star_VideoPlayer
 		if (m_bFullScreen || m_keepwidth == 0) m_pDisplay->SetAspectRatioMode(NoStretch);
 		else m_pDisplay->SetAspectRatioMode(Stretch);
 		COLORREF border = m_svplwrapper->Get()->config.borderColor;
+		if (m_svplwrapper->GetItem(m_nowplaylist, m_nowplaying).borderColor != 0)
+			border = m_svplwrapper->GetItem(m_nowplaylist, m_nowplaying).borderColor;
 		if (border != 0) m_pDisplay->SetBorderColor(border);
 
 		JIF(FindUnconnectedPin(pLavVideoDecoder, PINDIR_INPUT, &pPinVideoInput));

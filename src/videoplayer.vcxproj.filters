@@ -168,6 +168,9 @@
       <Filter>VideoPlayer\DUIAdditional</Filter>
     </ClInclude>
     <ClInclude Include="cmdLine.h" />
+    <ClInclude Include="ScopeGuard.h">
+      <Filter>VideoPlayer\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="videoplayer.rc">

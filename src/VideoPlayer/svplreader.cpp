@@ -2,6 +2,7 @@
 
 #include "svplreader.h"
 #include <algorithm>
+#include <sstream>
 
 namespace Star_VideoPlayer
 {
@@ -10,20 +11,27 @@ namespace Star_VideoPlayer
 		InitializeCriticalSection(&m_cs);
 		CreateDefaultSvpl();
 		parserStatus = 0;
-		_trace(L"svplwrapper intialized\n");
+		_trace(L"svplwrapper Intialized\n");
 	}
 
 	svplwrapper::svplwrapper(wstring svplfilepath)
 	{
 		InitializeCriticalSection(&m_cs);
 		parserStatus = svplparser::ParseSvpl(&m_svpl, svplfilepath);
-		_trace(L"svplwrapper intialized\n");
+		_trace(L"svplwrapper Intialized\n");
+	}
+
+	svplwrapper::svplwrapper(LPCWSTR buffer)
+	{
+		InitializeCriticalSection(&m_cs);
+		parserStatus = svplparser::ParseSvpl(&m_svpl, buffer);
+		_trace(L"svplwrapper Intialized\n");
 	}
 
 	svplwrapper::~svplwrapper()
 	{
 		DeleteCriticalSection(&m_cs);
-		_trace(L"svplwrapper destructed\n");
+		_trace(L"svplwrapper Destructed\n");
 	}
 
 	void svplwrapper::CreateDefaultSvpl()
@@ -106,16 +114,32 @@ namespace Star_VideoPlayer
 		wifstream fin(filepath);
 		fin.imbue(locale(locale::classic(), new codecvt_utf8<wchar_t>));   // utf-8编码
 		
-		if (!fin) {
-			return -1;
-		}
+		if (!fin) return -1;
 
+		wstringstream wss;
+		wss << fin.rdbuf();
+
+		BOOL ret = ParseSvpl(svpldest, wss);
+		ios::sync_with_stdio(true);
+
+		return ret;
+	}
+
+	BOOL svplparser::ParseSvpl(svpl* svpldest, LPCWSTR buffer)
+	{
+		wstringstream wss;
+		wss << buffer;
+		return ParseSvpl(svpldest, wss);
+	}
+
+	BOOL svplparser::ParseSvpl(svpl* svpldest, wstringstream& strstream)
+	{
 		wstring s;
 
 		bool inplaylist = false;  // 在playlist中
 		bool inadapt = false;
 
-		while (getline(fin, s))
+		while (getline(strstream, s))
 		{
 			if (s != L"\0" && s.substr(0, 3) != L"***") {   // 如果不是注释
 				if (s.substr(0, 11) == L"</playlist>") {
@@ -137,7 +161,7 @@ namespace Star_VideoPlayer
 				}
 			}
 		}
-		ios::sync_with_stdio(true);
+
 		// Check validity
 		if (svpldest->config.normalplaylist < 0) return -2;
 		if (svpldest->config.normalplaylist >= (int)svpldest->playlists.size()) return -2;
@@ -145,7 +169,8 @@ namespace Star_VideoPlayer
 		return 0;
 	}
 
-	void svplparser::GetConfigAttribute(svpl* svpldest, wstring s) {
+	void svplparser::GetConfigAttribute(svpl* svpldest, wstring s)
+	{
 		wstring attribute = L"";
 		wstring value = L"";
 		bool invalue = false;
@@ -205,6 +230,7 @@ namespace Star_VideoPlayer
 
 	void svplparser::SetAttribute(svpl * svpldest, wstring name, wstring value, int type)
 	{
+		transform(name.begin(), name.end(), name.begin(), ::tolower);
 		switch (type)
 		{
 		case 1: {
@@ -223,6 +249,7 @@ namespace Star_VideoPlayer
 			if (name == L"volume") n_item->volume = _wtoi(value.c_str());
 			if (name == L"begintime") n_item->begintime = _wtof_l(value.c_str(), NULL);
 			if (name == L"endtime") n_item->endtime = _wtof_l(value.c_str(), NULL);
+			if (name == L"bordercolor") n_item->borderColor = wcstol(value.c_str(), nullptr, 16);
 			break;
 		}
 		}

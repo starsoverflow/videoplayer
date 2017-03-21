@@ -14,7 +14,7 @@
 #define WM_SwitchClip     WM_USER+18
 #define WM_PlayNext       WM_USER+19
 #define WM_AddMediaFile   WM_USER+20
-#define WM_ReloadSettings WM_USER+21
+#define WM_ReloadPlaylist WM_USER+21
 
 #define DEFAULT_WIDTH     800
 #define DEFAULT_HEIGHT    450

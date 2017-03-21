@@ -23,20 +23,20 @@ namespace Star_VideoPlayer
 			_cs = Initialized_Critical_Section;
 			_data = PointerToData;
 			EnterCriticalSection(&_cs);
-			_trace(L"cs entered\n");
+			_trace(L"Svpl CriticalSection Entered\n");
 		}
 
 		~LockHolder() noexcept
 		{
 			LeaveCriticalSection(&_cs);
-			_trace(L"cs left\n");
+			_trace(L"Svpl CriticalSection Left\n");
 		}
 
 		LockHolder(LockHolder && src)
 		{
-			_trace(L"moved\n");
+			_trace(L"Svpl Moved\n");
 			EnterCriticalSection(&src._cs);
-			_trace(L"cs entered\n");
+			_trace(L"Svpl CriticalSection entered\n");
 			_cs = src._cs;
 			_data = src._data;
 		}
@@ -69,6 +69,7 @@ namespace Star_VideoPlayer
 		int volume = 100;
 		double begintime = 0.0;  // 开始时间
 		double endtime = 0.0;    // 结束时间
+		DWORD borderColor = 0;   // 这里可以覆盖全局设置
 		int errtime = 0;         // 加载错误的次数（此项不应被保存到播放列表中，只是方便错误处理）
 	};
 
@@ -103,6 +104,7 @@ namespace Star_VideoPlayer
 	public:
 		svplwrapper();
 		svplwrapper(wstring svplfilepath);
+		svplwrapper(LPCWSTR buffer);
 		~svplwrapper();
 
 		void CreateDefaultSvpl();
@@ -141,6 +143,9 @@ namespace Star_VideoPlayer
 	class svplparser {
 	public:
 		static BOOL ParseSvpl(svpl* svpldest, wstring filepath);
+		static BOOL ParseSvpl(svpl* svpldest, LPCWSTR buffer);
+	private:
+		static BOOL ParseSvpl(svpl* svpldest, wstringstream& strstream);
 		static void GetConfigAttribute(svpl* svpldest, wstring s);
 		static void SetAttribute(svpl * svpldest, wstring name, wstring value, int type);
 		static void GetAttribute(svpl* svpldest, wstring s, int type);

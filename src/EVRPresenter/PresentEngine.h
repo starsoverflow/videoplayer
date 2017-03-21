@@ -116,8 +116,4 @@ protected:
 	
 	RECT                        m_rcBackScreen = { 0 }; // 存储了视频大小
 
-	IDirect3DSurface9*          m_pTempSurface = nullptr;
-	RECT                        m_rcTempSurface = { 0 };
-
-	HRESULT CreateCompatibleSurface(RECT rc);
 };

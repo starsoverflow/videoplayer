@@ -86,7 +86,6 @@ D3DPresentEngine::~D3DPresentEngine()
 	SafeRelease(&m_pSurfaceRepaint);
 	SafeRelease(&m_pDeviceManager);
 	SafeRelease(&m_pD3D9);
-	SafeRelease(&m_pTempSurface);
 	SafeRelease(&m_pSwapChain);
 
 	DeleteCriticalSection(&m_ObjectLock);
@@ -358,7 +357,6 @@ void D3DPresentEngine::ReleaseResources()
 {
 	SafeRelease(&m_pSwapChain);
 	SafeRelease(&m_pSurfaceRepaint);
-	SafeRelease(&m_pTempSurface);
 }
 
 
@@ -474,9 +472,8 @@ HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
 		JIF(m_pSwapChain->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer));
 		
 		D3DCOLOR clrFill = clrBlack;
-		bool TempSurfaceRequied = false;
 
-		RECT rcDest = m_rcBackScreen;
+		RECT rcDest = m_rcDestRect;
 		if (m_bShowBorder)
 		{
 			clrFill = m_BorderColor;
@@ -490,7 +487,6 @@ HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
 				double newheight = (double)m_rcBackScreen.bottom * (double)m_rcDestRect.right / (double)m_rcBackScreen.right;
 				rcDest.top = (m_rcDestRect.bottom - newheight) / 2;
 				rcDest.bottom = rcDest.top + newheight;
-				TempSurfaceRequied = true;
 			}
 			else if (scalesrc - scaledest < -0.01)
 			{
@@ -499,24 +495,11 @@ HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
 				double newwidth = (double)m_rcBackScreen.right * (double)m_rcDestRect.bottom / (double)m_rcBackScreen.bottom;
 				rcDest.left = (m_rcDestRect.right - newwidth) / 2;
 				rcDest.right = rcDest.left + newwidth;
-				TempSurfaceRequied = true;
 			}
 		}
 
 		JIF(m_pDevice->ColorFill(pBackBuffer, nullptr, clrFill));
-
-		if (TempSurfaceRequied)
-		{
-			JIF(CreateCompatibleSurface(m_rcDestRect));
-			JIF(m_pDevice->ColorFill(m_pTempSurface, nullptr, clrFill));
-			JIF(m_pDevice->StretchRect(pSurface, nullptr, m_pTempSurface, &rcDest, D3DTEXF_LINEAR));
-			JIF(m_pDevice->StretchRect(m_pTempSurface, nullptr, pBackBuffer, nullptr, D3DTEXF_LINEAR));
-		}
-		else
-		{
-			JIF(m_pDevice->StretchRect(pSurface, nullptr, pBackBuffer, nullptr, D3DTEXF_LINEAR));
-		}
-
+		JIF(m_pDevice->StretchRect(pSurface, nullptr, pBackBuffer, &rcDest, D3DTEXF_LINEAR));
 		JIF(m_pSwapChain->Present(nullptr, &m_rcDestRect, m_hwnd, nullptr, 0));
 
 		// Store this pointer in case we need to repaint the surface.
@@ -968,21 +951,4 @@ HRESULT D3DPresentEngine::GetBorderColor(COLORREF* Clr)
 	if (Clr) *Clr = m_BorderColor;
 	LeaveCriticalSection(&m_ObjectLock);
 	return S_OK;
-}
-
-HRESULT D3DPresentEngine::CreateCompatibleSurface(RECT rc)
-{
-	if (rc.bottom == m_rcTempSurface.bottom && rc.right == m_rcTempSurface.right) return S_OK;
-	HRESULT hr;
-	SAFE_RELEASE(m_pTempSurface);
-	IDirect3DTexture9* pTempTexture = nullptr;
-	JIF(m_pDevice->CreateTexture(m_rcDestRect.right, m_rcDestRect.bottom, 1, D3DUSAGE_RENDERTARGET,
-		m_d3dpp.BackBufferFormat, D3DPOOL_DEFAULT, &pTempTexture, nullptr));
-	JIF(pTempTexture->GetSurfaceLevel(0, &m_pTempSurface));
-
-done:
-	SAFE_RELEASE(pTempTexture);
-	if (hr == S_OK) m_rcTempSurface = rc;
-	else m_rcTempSurface = { -1 };
-	return hr;
 }

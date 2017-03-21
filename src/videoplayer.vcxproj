@@ -126,6 +126,7 @@
     <ClInclude Include="EVRPresenter\SamplePool.h" />
     <ClInclude Include="EVRPresenter\scheduler.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ScopeGuard.h" />
     <ClInclude Include="VideoPlayer\ControlsWindow.h" />
     <ClInclude Include="VideoPlayer\DragDrop.h" />
     <ClInclude Include="VideoPlayer\DragListUI.h" />

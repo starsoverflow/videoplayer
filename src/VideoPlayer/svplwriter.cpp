@@ -76,7 +76,7 @@ namespace Star_VideoPlayer
 			fs << L"<playlist" << ats(currentindex) << ats(keepwidth) << ats(name) << ats(volume) << L">";
 			for (unsigned int ii = 0;ii < m_svpl->playlists.at(ip).items.size();ii++)
 			{
-				fs << L"\n<item" << atsi(type) << atsi(path) << atsi(title) << atsi(volume) << atsi(begintime) << atsi(endtime) << L"/>";
+				fs << L"\n<item" << atsi(type) << atsi(path) << atsi(title) << atsi(volume) << atsi(begintime) << atsi(endtime) << hex << atsi(borderColor) << dec << L"/>";
 			}
 			fs << L"\n</playlist>\n";
 		}

@@ -27,13 +27,13 @@ private:
 	bool    saveHistoryPlaylist = true;
 	bool    addToCurrentInstance = false;
 	bool    alwaysOnTop = false;
-	bool    keepWindowAspectRatio = false;
 	int     keepWidth = 0;
 	POINT   wndSize = { 0 };
+	POINT   windowAspectRatio = { 0 };
 	wstring parserLastError;
-
-	const wchar_t* VPCommands[8] = { L"nooverwrite", L"nosavehistory", L"add", L"mediafile", L"playlist", L"keepwidth",
-		L"size", L"alwaysontop" };
+	
+	const wchar_t* VPCommands[9] = { L"nooverwrite", L"nosavehistory", L"add", L"mediafile", L"playlist", L"keepwidth",
+		L"size", L"alwaysOnTop", L"windowAspectRatio" };
 
 	static int __stdcall EnumWindowsCallback(HWND hwnd, LPARAM lParam);
 };
@@ -71,7 +71,11 @@ int VPInterfaces::Parse(wchar_t* cmdLine)
 					if ((offset - offset1) != wcslen(command)) { accepted = false; }
 					while (accepted && offset1 < offset && command[offset2] != L'\0')
 					{
-						if (cmdLine[offset1] != command[offset2]) accepted = false;
+						wchar_t chToCompare1 = cmdLine[offset1];
+						wchar_t chToCompare2 = command[offset2];
+						if (chToCompare1 >= L'A' && chToCompare1 <= L'Z') chToCompare1 += L'a' - L'A';
+						if (chToCompare2 >= L'A' && chToCompare2 <= L'Z') chToCompare2 += L'a' - L'A';
+						if (chToCompare1 != chToCompare2) accepted = false;
 						offset1++; offset2++;
 					}
 					if (accepted) {
@@ -98,6 +102,10 @@ int VPInterfaces::Parse(wchar_t* cmdLine)
 					state = 5;
 				}
 				else if (acceptedCommand == VPCommands[6]) {
+					valuetoken = offset + 1;
+					state = 6;
+				}
+				else if (acceptedCommand == VPCommands[8]) {
 					valuetoken = offset + 1;
 					state = 6;
 				}
@@ -137,12 +145,16 @@ int VPInterfaces::Parse(wchar_t* cmdLine)
 			if (ch == L'/' || ch == L'-') { offset--; }
 			break;
 		case 6:
-			if (ch == L'/' || ch == L'-' || ch == L' ' || ch == L'\0') { parserLastError = wstring(acceptedCommand) + L" 需要定义x,y"; return -1; }
-			else if (ch == L',')
+			if (ch == L'/' || ch == L'-' || ch == L' ' || ch == L'\0') { parserLastError = wstring(acceptedCommand) + L" 需要定义x和y"; return -1; }
+			else if (ch == L',' || ch == L':')
 			{
-				if (valuetoken >= offset) { parserLastError = L"size.x 的值不能为空"; return -1; }
-				wndSize.x = _wtoi(strCmdLine.substr(valuetoken, offset - valuetoken).c_str());
-				if (wndSize.x > 2560) { parserLastError = L"size.x 的值太大"; return -1; }
+				if (valuetoken >= offset) { parserLastError = wstring(acceptedCommand) + L".x 的值不能为空"; return -1; }
+				if (acceptedCommand == VPCommands[6])
+				{
+					wndSize.x = _wtoi(strCmdLine.substr(valuetoken, offset - valuetoken).c_str());
+					if (wndSize.x > 2560) { parserLastError = wstring(acceptedCommand) + L".x 的值太大"; return -1; }
+				}
+				else windowAspectRatio.x = _wtoi(strCmdLine.substr(valuetoken, offset - valuetoken).c_str());
 				valuetoken = offset + 1;
 				state = 7;
 			}
@@ -153,9 +165,13 @@ int VPInterfaces::Parse(wchar_t* cmdLine)
 			else if (ch == L' ' || ch == L'\0') { state = 0; }
 			else if (ch < L'0' || ch > L'9') { parserLastError = wstring(acceptedCommand) + L" 的值只能为数字"; return -1; }
 			if (state == 0) {
-				if (valuetoken >= offset) { parserLastError = L"size.y 的值不能为空"; return -1; }
-				wndSize.y = _wtoi(strCmdLine.substr(valuetoken, offset - valuetoken).c_str());
-				if (wndSize.y > 1440) { parserLastError = L"size.y 的值太大"; return -1; }
+				if (valuetoken >= offset) { parserLastError = wstring(acceptedCommand) + L".y 的值不能为空"; return -1; }
+				if (acceptedCommand == VPCommands[6])
+				{
+					wndSize.y = _wtoi(strCmdLine.substr(valuetoken, offset - valuetoken).c_str());
+					if (wndSize.y > 1440) { parserLastError = wstring(acceptedCommand) + L".y 的值太大"; return -1; }
+				}
+				else windowAspectRatio.y = _wtoi(strCmdLine.substr(valuetoken, offset - valuetoken).c_str());
 			}
 			if (ch == L'/' || ch == L'-') { offset--; }
 			break;
@@ -213,10 +229,12 @@ int VPInterfaces::CreateVideoPlayerInstance()
 		csi newItem;
 		newItem.path = mediaFile;
 		SvplWrapper->AddItem(newItem, 0);
-		if ((wndSize.x == 0 || wndSize.y == 0) && keepWidth == 0) keepWidth = 1;  // Enable keepwidth for default.
+		if ((wndSize.x == 0 || wndSize.y == 0) && keepWidth == 0 && (windowAspectRatio.x == 0 || windowAspectRatio.y == 0))
+			keepWidth = 1;  // Enable keepwidth for default.
 		SvplWrapper->Get()->config.size = wndSize;
 		SvplWrapper->Get()->config.alwaystop = alwaysOnTop;
 		SvplWrapper->Get()->playlists.at(0).keepwidth = keepWidth;
+		SvplWrapper->Get()->config.windowAspectRatio = windowAspectRatio;
 		
 		VideoWindow->SetNewWrapper(SvplWrapper);
 	}
@@ -301,6 +319,7 @@ int VPInterfaces::ParserTest()
 	t("/add", ret == 0 && addToCurrentInstance == true);
 	t("/size=123", ret == -1);
 	t("/size=123.", ret == -1);
+	t("/size=123.4", ret == -1);
 	t("/size=123,", ret == -1);
 	t("/size=123,1", ret == 0 && wndSize.x == 123 && wndSize.y == 1);
 	t("/size=1,1", ret == 0 && wndSize.x == 1 && wndSize.y == 1);
@@ -337,6 +356,9 @@ int VPInterfaces::ParserTest()
 	tn("/playlist=\"2222\" /size=", ret == -1);
 	tn("/size ", ret == -1);
 	tn("/size=233, 234", ret == -1);
+	tn("/size=233,234 /windowaspectratio=13", ret == -1);
+	tn("/size=233,234 /windowaspectratio=13:4", ret == 0 && c->wndSize.x == 233 && c->wndSize.y == 234 && c->windowAspectRatio.x == 13 && c->windowAspectRatio.y == 4 && c->alwaysOnTop == false);
+	tn("/size=233,234 /alwaysontop /windowaspectratio=13:4", ret == 0 && c->wndSize.x == 233 && c->wndSize.y == 234 && c->windowAspectRatio.x == 13 && c->windowAspectRatio.y == 4 && c->alwaysOnTop);
 
 	tn("/size", ret == -1);
 	tn("", ret == 0);
