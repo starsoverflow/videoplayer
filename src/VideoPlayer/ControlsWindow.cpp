@@ -63,6 +63,7 @@ namespace Star_VideoPlayer
 			if (!m_barControl->IsVisible()) {
 				m_barControl->SetVisible(true);
 				m_barTitle->SetVisible(true);
+				if (IsWindowVisible(m_cPlaylist->GetHWND())) SetActiveWindow(m_cPlaylist->GetHWND());
 			}
 		}
 		else {
@@ -166,7 +167,7 @@ namespace Star_VideoPlayer
 									m_cVideo->m_iPlaylistAttached = 0;
 								}
 							}
-							SetWindowPos(m_cPlaylist->GetHWND(), NULL, newx, rect.top, 0, 0, SWP_NOSIZE);
+							SetWindowPos(m_cPlaylist->GetHWND(), nullptr, newx, rect.top, 0, 0, SWP_NOSIZE);
 						}
 						else
 						{
@@ -185,7 +186,7 @@ namespace Star_VideoPlayer
 									m_cVideo->m_iPlaylistAttached = 0;
 								}
 							}
-							SetWindowPos(m_cPlaylist->GetHWND(), NULL, newx, rect.top, 0, 0, SWP_NOSIZE);
+							SetWindowPos(m_cPlaylist->GetHWND(), nullptr, newx, rect.top, 0, 0, SWP_NOSIZE);
 						}
 					}
 					m_cPlaylist->ShowWindow(true, false);
@@ -294,7 +295,7 @@ namespace Star_VideoPlayer
 		}
 		case WM_KILLFOCUS:		lRes = OnKillFocus(uMsg, wParam, lParam, bHandled); break;
 		case WM_SETFOCUS:		lRes = OnSetFocus(uMsg, wParam, lParam, bHandled); break;
-		case WM_LBUTTONUP:		lRes = OnLButtonUp(uMsg, wParam, lParam, bHandled); break;
+		case WM_LBUTTONUP:		lRes = OnLButtonUp(uMsg, wParam, lParam, bHandled);	break;
 		case WM_LBUTTONDOWN:	lRes = OnLButtonDown(uMsg, wParam, lParam, bHandled); break;
 		case WM_MOUSEMOVE:		lRes = OnMouseMove(uMsg, wParam, lParam, bHandled); break;
 		case WM_MOUSEHOVER:	lRes = OnMouseHover(uMsg, wParam, lParam, bHandled); break;

@@ -158,6 +158,7 @@ namespace Star_VideoPlayer
 		RegisterHotkey();
 
 		m_psCurrent = Stopped;
+		InvalidateRect(m_hwnd, nullptr, true);
 		
 		OpenClip(m_nowplaying);
 		
@@ -240,7 +241,7 @@ namespace Star_VideoPlayer
 		m_cCon = new CControlWindow(_T("Controls.xml"), this);
 		if (!m_cCon) return -1;
 
-		m_hCon = m_cCon->Create(m_hwnd, _T("Controls Window"), WS_POPUP, NULL);
+		m_hCon = m_cCon->Create(m_hwnd, _T("Controls Window"), WS_POPUP, WS_EX_NOACTIVATE);
 		if (m_hCon == 0) return -1;
 
 		RECT rc;
@@ -339,7 +340,7 @@ namespace Star_VideoPlayer
 				DeferWindowPos(hdwp, m_cCon->GetPlayListWindow()->GetHWND(), insert, 0, 0, 0, 0, uFlags | SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER);
 			}
 
-			DeferWindowPos(hdwp, m_hCon, m_cCon->GetPlayListWindow()->GetHWND(), x, y, cx, cy, uFlags);
+			DeferWindowPos(hdwp, m_hCon, nullptr , x, y, cx, cy, uFlags);
 
 			EndDeferWindowPos(hdwp);
 		}
