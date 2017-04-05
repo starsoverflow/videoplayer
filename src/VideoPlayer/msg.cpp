@@ -197,7 +197,8 @@ namespace Star_VideoPlayer
 		if (pPrevious) pPrevious->pNext = this->pNext;
 		if (pNext) pNext->pPrevious = this->pPrevious;
 
-		this->Close();
+		SendMessageW(WM_CLOSE, 0, 0);
+		delete this;
 		return 0;
 	}
 
@@ -232,7 +233,6 @@ namespace Star_VideoPlayer
 			bHandled = TRUE;
 			RECT rc;
 			GetWindowRect(m_hWnd, &rc);
-			static ULONGLONG beginTime = 0;
 			if (m_DropToY > rc.top)
 			{
 				if (beginTime == 0)

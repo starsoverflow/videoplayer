@@ -295,7 +295,7 @@ namespace Star_VideoPlayer
 			{
 				owner->dragline->SetVisible(false);
 			}
-			DestroyWindow(this->GetHWND());
+			SendMessage(WM_CLOSE, 0, 0);
 		}
 		return 0;
 	}

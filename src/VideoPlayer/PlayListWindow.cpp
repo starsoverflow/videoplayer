@@ -54,8 +54,6 @@ namespace Star_VideoPlayer
 		else if (msg.sType == _T("itemclick"))
 		{
 			// ÅÐ¶ÏÁ¬Ðøµã»÷
-			static ULONGLONG dbclickfirsttime = 0;
-			static POINT cursorPoint = { -30000 };
 			if (dbclickfirsttime == 0) dbclickfirsttime = GetTickCount64();
 			else if (GetTickCount64() - dbclickfirsttime <= GetDoubleClickTime())
 			{

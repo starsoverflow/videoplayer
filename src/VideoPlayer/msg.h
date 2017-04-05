@@ -13,7 +13,7 @@
 #define ERR_CANNOTOPENPLAYLIST         "无法打开播放列表\n%s"
 #define ERR_CANNOTREADPLAYLIST         "无法读取播放列表\n%s\n必要的值可能未定义，请参考 svplsample.txt"
 
-#define ERR_NOT_IMPL                   "作者起驾回棺了，此功能尚未完成~~\n最近一次更新：Maid Dragon E8~~"
+#define ERR_NOT_IMPL                   "此功能尚未完成~~"
 
 #define ERR_CANNOTLOADFONTS            "无法加载字体 %s %d"
 #define ERR_MULTIINSTANCES             "%s 已经在运行中"
@@ -100,6 +100,7 @@ namespace Star_VideoPlayer
 
 		int             m_wndHeight;
 		int             m_DropToY;         // 掉落到的坐标，有消息窗口被关闭时调度
+		ULONGLONG       beginTime = 0;     // 第一次收到DropTimer消息的时间
 
 		CDuiString		m_strXMLPath;
 		ULONGLONG       m_FadeOutBeginTime;

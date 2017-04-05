@@ -66,6 +66,7 @@ namespace Star_VideoPlayer
 		void Notify(TNotifyUI& msg);
 		CControlUI* CreateControl(LPCTSTR pstrClassName);
 		LRESULT OnNcHitTest(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) override;
+		LRESULT OnClose(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled) override;
 
 		CDuiString m_strXMLPath;
 		CVideoWindow* m_cVideo = nullptr;
@@ -73,5 +74,6 @@ namespace Star_VideoPlayer
 		HWND m_hVideo;
 
 		vp_DragDrop* plwnd_DragDrop = nullptr;
+		LONG lastPointx = 0;    // 存储上一次slider的横坐标值
 	};
 }

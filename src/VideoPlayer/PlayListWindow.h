@@ -41,6 +41,7 @@ namespace Star_VideoPlayer
 		LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 
 	private:
-
+		ULONGLONG dbclickfirsttime = 0;
+		POINT cursorPoint = { -30000 };   // 上一次单击Item时的鼠标位置
 	};
 }

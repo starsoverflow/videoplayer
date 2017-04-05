@@ -19,17 +19,7 @@ namespace Star_VideoPlayer
 
 	CControlWindow::~CControlWindow()
 	{
-		if (m_cVideo) m_cVideo->UnBindControlWindow();
-		if (m_cPlaylist)
-		{
-			m_cPlaylist->Close();
-		}
-		if (plwnd_DragDrop)
-		{
-			plwnd_DragDrop->DragDropRevoke();
-			plwnd_DragDrop->Release();
-			plwnd_DragDrop = nullptr;
-		}
+		
 	}
 
 	LPCTSTR CControlWindow::GetWindowClassName() const
@@ -109,9 +99,6 @@ namespace Star_VideoPlayer
 
 	void CControlWindow::Notify(TNotifyUI& msg)
 	{
-
-		static LONG lastPointx = 0;    // ´æ´¢Êó±êºá×ø±êÖµ
-
 		if (msg.sType == _T("windowinit"))
 		{
 			OnPrepare(msg);
@@ -262,6 +249,24 @@ namespace Star_VideoPlayer
 			_tcsicmp(pControl->GetClass(), _T("EditUI")) != 0 &&
 			_tcsicmp(pControl->GetClass(), _T("RichEditUI")) != 0) return false;
 		else return true;
+	}
+
+	LRESULT CControlWindow::OnClose(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
+	{
+		bHandled = FALSE;
+		if (m_cPlaylist)
+		{
+			::SendMessage(m_cPlaylist->GetHWND(), WM_CLOSE, 0, 0);
+			delete m_cPlaylist;
+			m_cPlaylist = nullptr;
+		}
+		if (plwnd_DragDrop)
+		{
+			plwnd_DragDrop->DragDropRevoke();
+			plwnd_DragDrop->Release();
+			plwnd_DragDrop = nullptr;
+		}
+		return 0;
 	}
 
 	LRESULT CControlWindow::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)

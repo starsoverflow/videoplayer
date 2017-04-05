@@ -12,15 +12,16 @@
 
 #include <gdiplus.h>
 
-#define MyClassName _T("Star Video Player_Video Window")
 #define MyTitle _T("Star Video Player")
 
-#define HOTKEY_PlayStop 4001
-#define HOTKEY_Next 4002
-#define HOTKEY_Prev 4003
-#define HOTKEY_VolUp 4004
-#define HOTKEY_VolDown 4005
-#define HOTKEY_Mute 4007
+#define HOTKEY_PlayStop  4001
+#define HOTKEY_Next      4002
+#define HOTKEY_Prev      4003
+#define HOTKEY_VolUp     4004
+#define HOTKEY_VolDown   4005
+#define HOTKEY_Mute      4007
+
+#define MAPSIZE          0xffffff
 
 namespace Star_VideoPlayer
 {
@@ -28,12 +29,14 @@ namespace Star_VideoPlayer
 		: m_strAppPath(appPath),
 		  m_strPlaylistFile(playlistPath)
 	{
+		m_hMap = CreateFileMappingW(INVALID_HANDLE_VALUE, &SECURITY_ATTRIBUTES({sizeof(SECURITY_ATTRIBUTES), nullptr, 1})
+			, PAGE_READWRITE, 0, MAPSIZE, nullptr);
 		srand((unsigned int)time(nullptr));
 	}
 
 	CVideoWindow::~CVideoWindow()
 	{
-		ReleaseVideoWindow();
+		CloseHandle(m_hMap);
 	}
 
 	LRESULT CVideoWindow::CreateVideoWindow(HINSTANCE hInstance)
@@ -48,7 +51,7 @@ namespace Star_VideoPlayer
 		wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_VIDEOPLAYER));
 		wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 		wcex.hbrBackground = (HBRUSH)(COLOR_BACKGROUND + 1);
-		wcex.lpszClassName = MyClassName;
+		wcex.lpszClassName = L"Star Video Player_Video Window";
 		wcex.lpszMenuName = NULL;
 		wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_VIDEOPLAYER));
 		RegisterClassEx(&wcex);
@@ -121,7 +124,7 @@ namespace Star_VideoPlayer
 		if (rsvpl->config.alwaystop) m_bTopMost = true;
 		else m_bTopMost = false;
 
-		m_hwnd = CreateWindowEx((m_bTopMost ? WS_EX_TOPMOST : NULL), MyClassName, MyTitle, WS_POPUP | WS_MINIMIZEBOX | WS_CLIPCHILDREN | WS_CAPTION,
+		m_hwnd = CreateWindowEx((m_bTopMost ? WS_EX_TOPMOST : NULL), L"Star Video Player_Video Window", MyTitle, WS_POPUP | WS_MINIMIZEBOX | WS_CLIPCHILDREN | WS_CAPTION,
 			rsvpl->config.location.x, rsvpl->config.location.y, width, height, NULL, NULL, hInstance, this);
 
 		if (!m_hwnd)
@@ -239,8 +242,6 @@ namespace Star_VideoPlayer
 	LRESULT CVideoWindow::BindControlWindow(bool Show)
 	{
 		m_cCon = new CControlWindow(_T("Controls.xml"), this);
-		if (!m_cCon) return -1;
-
 		m_hCon = m_cCon->Create(m_hwnd, _T("Controls Window"), WS_POPUP, WS_EX_NOACTIVATE);
 		if (m_hCon == 0) return -1;
 
@@ -286,9 +287,10 @@ namespace Star_VideoPlayer
 	LRESULT CVideoWindow::UnBindControlWindow()
 	{
 		if (!m_cCon) return -1;
-		m_cCon->Close();
+		if (m_hCon) SendMessage(m_hCon, WM_CLOSE, 0, 0);
+		delete m_cCon;
 		m_cCon = nullptr;
-
+		m_hCon = nullptr;
 		return 0;
 	}
 
@@ -458,10 +460,6 @@ namespace Star_VideoPlayer
 			}
 			case 2:
 			{
-				//_trace(L"%d\n", m_hCon);
-				static POINT LastPoint;     // 上一次的鼠标位置
-				static bool IsInWindow;
-
 				bool ismoved = false;
 
 				POINT point;
@@ -580,7 +578,6 @@ namespace Star_VideoPlayer
 		case WM_MOUSEMOVE:
 		{
 			if (m_bFullScreen) break;
-			static POINT lastPoint = { 0 };
 			if (mousemove_first)
 			{
 				mousemove_first = false;
@@ -752,12 +749,16 @@ namespace Star_VideoPlayer
 		{
 			KillTimer(m_hwnd, 1);
 			KillTimer(m_hwnd, 2);
-		
+			
 			MyShowCursor(true);
 			CloseInterfaces();
+			if (m_hCon) SendMessage(m_hCon, WM_CLOSE, 0, 0);
+			m_hCon = nullptr;
 			DestroyWindow(m_hwnd);
 			if (m_bSaveHistoryPlaylist) SavePlaylist(m_strAppPath + L"lastSaved.svpl");
 			if (m_bSavePlaylistWhenExit && !m_strPlaylistFile.empty()) SavePlaylist(m_strPlaylistFile);
+			if (m_cCon) UnBindControlWindow();
+			ReleaseVideoWindow();
 			break;
 		}
 		
@@ -864,10 +865,8 @@ namespace Star_VideoPlayer
 		case WM_ReloadPlaylist:
 		{
 			if (lParam != 0xffff) break;
-			HANDLE hMap = OpenFileMappingW(FILE_MAP_ALL_ACCESS, 0, L"Local\\videopl{52DC5C06-AAA4-46C5-B753-3BC8E28099B1}");
-			if (hMap == nullptr) return -1;
-			ON_SCOPE_EXIT([hMap] { CloseHandle(hMap); });
-			wchar_t* pbuf = (wchar_t*)MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, 0, 0, 2048);
+			if (m_hMap == nullptr) return -1;
+			wchar_t* pbuf = (wchar_t*)MapViewOfFile(m_hMap, FILE_MAP_ALL_ACCESS, 0, 0, MAPSIZE);
 			if (pbuf == nullptr) return -1;
 			ON_SCOPE_EXIT([pbuf] { UnmapViewOfFile(pbuf); });
 			shared_ptr<svplwrapper> new_svplwrapper(new svplwrapper(pbuf));
@@ -1436,9 +1435,6 @@ namespace Star_VideoPlayer
 
 		HRESULT hr;
 		m_strMediaFile = szFilename;
-
-		// 统计自上次成功播放或者提示ERR_TOO_MANY_INCORRECT_CLIP后的所有错误次数
-		static int total_err_times = 0;
 
 		// Start playing the media file
 		hr = PlayMovieInWindow(szFilename);

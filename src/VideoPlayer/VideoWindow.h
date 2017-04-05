@@ -20,7 +20,7 @@
 #define DEFAULT_HEIGHT    450
 #define MINIMUM_WIDTH     480
 #define MINIMUM_HEIGHT    270
-#define MAXIMUM_WIDTH     4096
+#define MAXIMUM_WIDTH     3840
 #define MAXIMUM_HEIGHT    2160
 #define DEFAULT_SCALE     double(DEFAULT_WIDTH.0/DEFAULT_HEIGHT.0)
 
@@ -162,7 +162,7 @@ namespace Star_VideoPlayer
 		bool m_bTopMost = false;
 
 		static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-		LRESULT __inline PaintWelcomeImg(int msgType);
+		LRESULT PaintWelcomeImg(int msgType);
 
 		HRESULT PlayMovieInWindow(LPCTSTR szFile);
 		HRESULT InitVideoWindow(SIZE);
@@ -190,6 +190,14 @@ namespace Star_VideoPlayer
 		bool mousemove_first = true;
 		bool m_originalTopMost;             // 全屏前是否置顶窗口
 		bool m_bFullScreen = false;         // 是否全屏
+
+		int total_err_times = 0;			// 统计自上次成功播放或者提示ERR_TOO_MANY_INCORRECT_CLIP后的所有错误次数
+		
+		POINT LastPoint = { 0 };			// 上一次Timer判断窗体覆盖时的鼠标位置
+		bool IsInWindow = false;			// 上一次Timer判断窗体覆盖时是否已经在窗口内
+		POINT lastPoint = { 0 };			// 上一次收到MouseMove消息时的鼠标位置
+
+		HANDLE m_hMap = nullptr;
 
 		void __forceinline MyShowCursor(bool Show = true)
 		{
