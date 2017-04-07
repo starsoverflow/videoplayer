@@ -1,7 +1,7 @@
 
 #include "MyMenu.h"
 
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 	ConMenu::ConMenu(CDuiString xml)
 		:CDuiMenu(xml)

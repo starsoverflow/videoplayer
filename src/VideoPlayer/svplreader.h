@@ -13,7 +13,7 @@ using namespace std;
 //                原来的 svplreader 更名为 svplparser 用于读取 svpl 文件
 //                优化 svplparser 的代码
 
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 	template<typename _T> class LockHolder
 	{

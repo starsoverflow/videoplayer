@@ -41,7 +41,7 @@
 
 #define MAX_MESSAGE_LENGTH 1024
 
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 	using namespace DuiLib;
 
@@ -71,8 +71,9 @@ namespace Star_VideoPlayer
 		void InitWindow();
 		void Notify(TNotifyUI& msg);
 		CControlUI* CreateControl(LPCTSTR pstrClassName);
-		LRESULT CloseMessageWindow();
+		LRESULT CloseMessageWindow(int retValue);
 		LRESULT HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
+		void OnFinalMessage(HWND hWnd);
 
 	protected:
 		LPCTSTR GetWindowClassName() const;
@@ -116,5 +117,7 @@ namespace Star_VideoPlayer
 		CHorizontalLayoutUI* m_buttonContainer;
 
 		std::function<void(int)>  m_callback;
+
+		bool            m_ValidReset = true;   // ±êÖ¾Î»
 	};
 }

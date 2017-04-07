@@ -12,7 +12,7 @@
 #include <algorithm>
 #include "msg.h"
 
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 	// {4657278A-411B-11D2-839A-00C04FD918D0}
 	static const GUID CLSID_DragDropHelper = { 0x4657278A, 0x411B, 0x11D2, { 0x83, 0x9A, 0x00, 0xC0, 0x4F, 0xD9, 0x18, 0xD0 } };

@@ -14,7 +14,7 @@
 
 using namespace std;
 
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 	class vp_DragDrop : public IDropTarget
 	{

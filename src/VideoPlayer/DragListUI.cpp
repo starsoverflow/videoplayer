@@ -6,7 +6,7 @@
 #include "PlayListWindow.h"
 #include "VideoWindow.h"
 
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 
 #define ScrollTimerID 2421

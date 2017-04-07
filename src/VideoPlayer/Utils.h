@@ -6,7 +6,7 @@
 #define RectClientToScreen(x, y) ::ClientToScreen(y, (LPPOINT)&x.left);\
                                  ::ClientToScreen(y, (LPPOINT)&x.right);
 
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 	void __inline string_replace(std::wstring &str, const std::wstring &old_value, const std::wstring &new_value)
 	{

@@ -3,7 +3,7 @@
 #include <tchar.h>
 #include "svplwriter.h"
 
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 	// 返回值：0 成功 1 无法打开文件 2 由用户创建 禁止修改
 	BOOL svplwriter::WritePlayListToFile(wstring filepath, const svpl * m_svpl)

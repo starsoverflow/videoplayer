@@ -12,7 +12,7 @@
 #include "..\resource.h"
 #include "Utils.h"
 
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 	// ÉùÒô¿ØÖÆ
 	const int volumes[] = { -10000, -6418, -6147, -6000,

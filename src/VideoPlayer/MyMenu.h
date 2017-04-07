@@ -1,7 +1,7 @@
 #pragma once
 #include "MenuUI.h"
 
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 	using namespace DuiLib;
 

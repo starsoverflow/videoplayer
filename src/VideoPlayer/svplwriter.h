@@ -1,7 +1,7 @@
 
 #include "svplreader.h"
 
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 	class svplwriter {
 	public:

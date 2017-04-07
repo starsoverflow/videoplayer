@@ -5,6 +5,9 @@
 #include "msg.h"
 #include "..\mydebug.h"
 #include <string>
+#include <memory>
+
+using std::shared_ptr;
 
 #define FadeOutTimerID      3101
 #define FadeOutTime         4000
@@ -17,7 +20,7 @@
 #define DropTimerElapse     15
 #define DropAcceleration    0.08
 
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 	CMessageWindow* CMessageWindow::pBegin = nullptr;
 	CMessageWindow* CMessageWindow::pEnd = nullptr;
@@ -158,21 +161,21 @@ namespace Star_VideoPlayer
 		{
 			if (msg.pSender->GetName() == _T("button1"))
 			{
-				CloseMessageWindow();
-				if (m_callback) m_callback(1);
+				CloseMessageWindow(1);
 			}
 			else if (msg.pSender->GetName() == _T("button2"))
 			{
-				CloseMessageWindow();
-				if (m_callback) m_callback(2);
+				CloseMessageWindow(2);
 			}
 			else if (msg.pSender->GetName() == _T("button_close"))
 			{
-				CloseMessageWindow();
-				if (m_callback) m_callback(0);
+				CloseMessageWindow(0);
 			}
 		}
-		__super::Notify(msg);
+		else
+		{
+			__super::Notify(msg);
+		}
 	}
 
 	CControlUI* CMessageWindow::CreateControl(LPCTSTR pstrClassName)
@@ -180,7 +183,7 @@ namespace Star_VideoPlayer
 		return NULL;
 	}
 
-	LRESULT CMessageWindow::CloseMessageWindow()
+	LRESULT CMessageWindow::CloseMessageWindow(int retValue)
 	{
 		auto wnd_iterator_r = pEnd;
 		while (wnd_iterator_r != this)
@@ -196,9 +199,10 @@ namespace Star_VideoPlayer
 		if (pEnd == this) pEnd = this->pPrevious;
 		if (pPrevious) pPrevious->pNext = this->pNext;
 		if (pNext) pNext->pPrevious = this->pPrevious;
+		
+		if (m_callback) m_callback(retValue);
+		Close();
 
-		SendMessageW(WM_CLOSE, 0, 0);
-		delete this;
 		return 0;
 	}
 
@@ -215,7 +219,7 @@ namespace Star_VideoPlayer
 				{
 					KillTimer(m_hWnd, FadeOutTimerID);
 					KillTimer(m_hWnd, DropTimerID);
-					CloseMessageWindow();
+					CloseMessageWindow(0);
 				}
 				else
 				{
@@ -270,9 +274,20 @@ namespace Star_VideoPlayer
 		{
 			m_FadeOutBeginTime = MAXULONGLONG;
 			this->m_PaintManager.SetTransparent(255);
+			m_ValidReset = true;
+		}
+		else if (!m_bResidentWindow && uMsg == WM_MOUSEMOVE)
+		{
+			if (m_ValidReset)
+			{
+				m_FadeOutBeginTime = MAXULONGLONG;
+				this->m_PaintManager.SetTransparent(255);
+			}
+			m_ValidReset = true;
 		}
 		else if (!m_bResidentWindow && uMsg == WM_MOUSELEAVE)
 		{
+			m_ValidReset = false;
 			m_FadeOutBeginTime = GetTickCount64();
 		}
 		return 0;
@@ -317,5 +332,10 @@ namespace Star_VideoPlayer
 		messageWindow->m_BeforeFadeOutDuration = Duration;
 		messageWindow->Create(nullptr, _T("Video Player Message Window"), WS_POPUP, WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE | WS_EX_TOPMOST);
 
+	}
+
+	void CMessageWindow::OnFinalMessage(HWND hWnd)
+	{
+		delete this;
 	}
 }

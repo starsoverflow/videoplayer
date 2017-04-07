@@ -687,11 +687,12 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
                 event.pSender = m_pEventHover;
                 m_pEventHover->Event(event);
             }
-            if( m_pEventClick != NULL ) {
-                event.Type = UIEVENT_BUTTONUP;
-                event.pSender = m_pEventClick;
-                m_pEventClick->Event(event);
-            }
+			// deleted by star
+            //if( m_pEventClick != NULL ) {
+            //    event.Type = UIEVENT_BUTTONUP;
+            //    event.pSender = m_pEventClick;
+            //    m_pEventClick->Event(event);
+            //}
 
 			// deleted by star
 			// 为什么要控制 Focus? 影响了关闭时部分窗口的逻辑
@@ -1070,8 +1071,7 @@ bool CPaintManagerUI::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, LR
                 tme.cbSize = sizeof(TRACKMOUSEEVENT);
                 tme.dwFlags = TME_HOVER | TME_LEAVE;
                 tme.hwndTrack = m_hWndPaint;
-				// dwHoverTime 400 to 5 modified by star
-                tme.dwHoverTime = m_hwndTooltip == NULL ? 5UL : (DWORD) ::SendMessage(m_hwndTooltip, TTM_GETDELAYTIME, TTDT_INITIAL, 0L);
+                tme.dwHoverTime = m_hwndTooltip == NULL ? 400UL : (DWORD) ::SendMessage(m_hwndTooltip, TTM_GETDELAYTIME, TTDT_INITIAL, 0L);
                 _TrackMouseEvent(&tme);
                 m_bMouseTracking = true;
             }

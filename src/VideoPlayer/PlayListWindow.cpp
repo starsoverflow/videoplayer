@@ -4,7 +4,7 @@
 #include "MyMenu.h"
 #include "DragListUI.h"
 
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 	CPlayListWindow::CPlayListWindow(CVideoWindow* videoWindow)
 		:

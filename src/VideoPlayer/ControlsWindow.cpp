@@ -4,7 +4,7 @@
 #include "PlaylistWindow.h"
 #include "DragDrop.h"
 
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 	CControlWindow::CControlWindow(LPCTSTR pszXMLPath, CVideoWindow* BindingVideoWindow)
 		: m_strXMLPath(pszXMLPath), m_cVideo(BindingVideoWindow)

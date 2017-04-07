@@ -12,7 +12,7 @@
 
 #include <gdiplus.h>
 
-#define MyTitle _T("Star Video Player")
+#define MyTitle _T("Video Player")
 
 #define HOTKEY_PlayStop  4001
 #define HOTKEY_Next      4002
@@ -23,7 +23,7 @@
 
 #define MAPSIZE          0xffffff
 
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 	CVideoWindow::CVideoWindow(wstring appPath, wstring playlistPath)
 		: m_strAppPath(appPath),

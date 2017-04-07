@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <sstream>
 
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 	svplwrapper::svplwrapper()
 	{

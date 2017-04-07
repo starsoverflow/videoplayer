@@ -218,13 +218,13 @@ int VPInterfaces::CreateVideoPlayerInstance()
 
 	DuiLib::CPaintManagerUI::SetInstance(hInstance);
 
-	using cv = Star_VideoPlayer::CVideoWindow;
+	using cv = SVideoPlayer::CVideoWindow;
 	unique_ptr<cv> VideoWindow(new cv(strAppPath, playlistFile));
 
 	if (!mediaFile.empty())
 	{
-		using csw = Star_VideoPlayer::svplwrapper;
-		using csi = Star_VideoPlayer::svpl_item;
+		using csw = SVideoPlayer::svplwrapper;
+		using csi = SVideoPlayer::svpl_item;
 		shared_ptr<csw> SvplWrapper(new csw());
 		csi newItem;
 		newItem.path = mediaFile;

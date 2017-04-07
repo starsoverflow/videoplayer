@@ -24,7 +24,7 @@
 #define MAXIMUM_HEIGHT    2160
 #define DEFAULT_SCALE     double(DEFAULT_WIDTH.0/DEFAULT_HEIGHT.0)
 
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 	using std::shared_ptr;
 

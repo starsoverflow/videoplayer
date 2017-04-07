@@ -2,7 +2,7 @@
 #include <map>
 using namespace std;
 
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 	// from mpc-hc
 	HRESULT LoadExternalObject(LPCTSTR path, REFCLSID clsid, REFIID iid, void** ppv)

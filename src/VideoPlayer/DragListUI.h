@@ -2,7 +2,7 @@
 #include "WindowUI.h"
 
 using namespace DuiLib;
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 	class DragListUI;
 	class CPlayListWindow;

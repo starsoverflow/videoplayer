@@ -420,7 +420,7 @@ LRESULT CALLBACK CWindowWnd::__WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
         pThis = static_cast<CWindowWnd*>(lpcs->lpCreateParams);
         pThis->m_hWnd = hWnd;
         ::SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LPARAM>(pThis));
-    } 
+    }
     else {
         pThis = reinterpret_cast<CWindowWnd*>(::GetWindowLongPtr(hWnd, GWLP_USERDATA));
         if( uMsg == WM_NCDESTROY && pThis != NULL ) {
@@ -429,6 +429,7 @@ LRESULT CALLBACK CWindowWnd::__WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
             if( pThis->m_bSubclassed ) pThis->Unsubclass();
             pThis->m_hWnd = NULL;
             pThis->OnFinalMessage(hWnd);
+			pThis = NULL;
             return lRes;
         }
     }

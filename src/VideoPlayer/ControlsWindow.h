@@ -3,7 +3,7 @@
 #include "../mydebug.h"
 using namespace DuiLib;
 
-namespace Star_VideoPlayer
+namespace SVideoPlayer
 {
 	class CVideoWindow;
 	class CPlayListWindow;
