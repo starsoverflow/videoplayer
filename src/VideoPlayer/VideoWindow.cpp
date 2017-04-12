@@ -536,6 +536,7 @@ namespace SVideoPlayer
 				SetWindowPlacement(m_hwnd, &wndpm);
 
 				ShowWindow(m_hwnd, SW_RESTORE);
+				InvalidateRect(m_hwnd, nullptr, FALSE);
 				if (m_pDisplay && m_psCurrent == Paused) m_pDisplay->RepaintVideo();
 				SetTimer(m_hwnd, 2, 100, NULL);
 
@@ -612,7 +613,7 @@ namespace SVideoPlayer
 		case WM_PAINT:
 		{
 			if (m_psCurrent == Stopped) PaintWelcomeImg(1);
-			else if (m_psCurrent == Running && m_bAudioOnly == TRUE) PaintWelcomeImg(2);
+			else if (m_bAudioOnly == TRUE) PaintWelcomeImg(2);
 			DefWindowProc(m_hwnd, uMsg, wParam, lParam);
 			break;
 		}
@@ -639,9 +640,9 @@ namespace SVideoPlayer
 				}
 				//_trace(L"m_rcVideo: %d,%d,%d,%d\n", m_rcVideo.left, m_rcVideo.right, m_rcVideo.top, m_rcVideo.bottom);
 				if (m_psCurrent == Stopped) InvalidateRect(m_hwnd, NULL, false);
-				else if (m_psCurrent == Running && m_bAudioOnly == TRUE) InvalidateRect(m_hwnd, NULL, false);
-				break;
+				else if (m_bAudioOnly == TRUE) InvalidateRect(m_hwnd, NULL, false);
 			}
+			break;
 		}
 
 		case WM_MOVE:
