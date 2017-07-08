@@ -16,3 +16,4 @@ wmv
 mkv
 rm
 rmvb
+swa

@@ -627,6 +627,7 @@ namespace SVideoPlayer
 			}
 			else
 			{
+				mousemove_first = true;
 				int cx = GET_X_LPARAM(lParam);
 				int cy = GET_Y_LPARAM(lParam);
 				if (!m_bAudioOnly) MoveVideoWindow(cx, cy);

@@ -53,7 +53,7 @@ namespace SVideoPlayer
 			if (!m_barControl->IsVisible()) {
 				m_barControl->SetVisible(true);
 				m_barTitle->SetVisible(true);
-				if (IsWindowVisible(m_cPlaylist->GetHWND())) SetActiveWindow(m_cPlaylist->GetHWND());
+				// if (IsWindowVisible(m_cPlaylist->GetHWND())) SetActiveWindow(m_cPlaylist->GetHWND());
 			}
 		}
 		else {
@@ -195,6 +195,7 @@ namespace SVideoPlayer
 					m_alwaystop_false->SetVisible(false);
 					m_alwaystop_true->SetVisible(true);
 					SetWindowPos(m_hVideo, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+					SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 				}
 			}
 			else if (msg.pSender->GetName() == _T("Settings")) {
