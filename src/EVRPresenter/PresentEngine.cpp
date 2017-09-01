@@ -607,7 +607,7 @@ HRESULT D3DPresentEngine::CreateD3DDevice()
 	pp.BackBufferWidth = 1;
 	pp.BackBufferHeight = 1;
 	pp.Windowed = TRUE;
-	pp.SwapEffect = D3DSWAPEFFECT_COPY;
+	pp.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	pp.BackBufferFormat = D3DFMT_UNKNOWN;
 	pp.hDeviceWindow = hwnd;
 	pp.Flags = D3DPRESENTFLAG_VIDEO;
@@ -642,6 +642,23 @@ HRESULT D3DPresentEngine::CreateD3DDevice()
 		vp = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
 	}
 
+	// Get the adapter display mode.
+	hr = m_pD3D9->GetAdapterDisplayMode(uAdapterID, &m_DisplayMode);
+	if (FAILED(hr))
+	{
+		goto done;
+	}
+
+	D3DMULTISAMPLE_TYPE mstype = D3DMULTISAMPLE_NONE;
+
+	if (m_pD3D9->CheckDeviceMultiSampleType(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_DisplayMode.Format,
+		TRUE, D3DMULTISAMPLE_8_SAMPLES, NULL) == D3D_OK)
+		mstype = D3DMULTISAMPLE_8_SAMPLES;
+	else if (m_pD3D9->CheckDeviceMultiSampleType(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_DisplayMode.Format,
+		TRUE, D3DMULTISAMPLE_4_SAMPLES, NULL) == D3D_OK)
+		mstype = D3DMULTISAMPLE_4_SAMPLES;
+	pp.MultiSampleType = mstype;
+
 	// Create the device.
 	hr = m_pD3D9->CreateDeviceEx(
 		uAdapterID,
@@ -657,13 +674,6 @@ HRESULT D3DPresentEngine::CreateD3DDevice()
 		goto done;
 	}
 
-	// Get the adapter display mode.
-	hr = m_pD3D9->GetAdapterDisplayMode(uAdapterID, &m_DisplayMode);
-	if (FAILED(hr))
-	{
-		goto done;
-	}
-
 	// Reset the D3DDeviceManager with the new device
 	hr = m_pDeviceManager->ResetDevice(pDevice, m_DeviceResetToken);
 	if (FAILED(hr))
@@ -673,6 +683,7 @@ HRESULT D3DPresentEngine::CreateD3DDevice()
 
 	SafeRelease(&m_pDevice);
 
+	m_d3dpp = pp;
 	m_pDevice = pDevice;
 	m_pDevice->AddRef();
 
@@ -746,11 +757,12 @@ HRESULT D3DPresentEngine::GetSwapChainPresentParameters(IMFMediaType *pType, D3D
 	pPP->BackBufferWidth = width;
 	pPP->BackBufferHeight = height;
 	pPP->Windowed = TRUE;
-	pPP->SwapEffect = D3DSWAPEFFECT_COPY;
+	pPP->SwapEffect = D3DSWAPEFFECT_DISCARD;
 	pPP->BackBufferFormat = (D3DFORMAT)d3dFormat;
 	pPP->hDeviceWindow = m_hwnd;
 	pPP->Flags = D3DPRESENTFLAG_VIDEO;
 	pPP->PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
+	pPP->MultiSampleType = m_d3dpp.MultiSampleType;
 
 	D3DDEVICE_CREATION_PARAMETERS params;
 	hr = m_pDevice->GetCreationParameters(&params);

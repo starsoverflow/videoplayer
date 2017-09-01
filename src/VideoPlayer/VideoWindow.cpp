@@ -887,8 +887,7 @@ namespace SVideoPlayer
 			}
 			else if (wParam == 3)
 			{
-				m_bBeginFromFirst = true;
-				OpenClip(m_nowplaying);
+				OpenClip(0);
 			}
 			break;
 		}

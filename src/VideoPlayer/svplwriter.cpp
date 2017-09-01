@@ -1,6 +1,11 @@
 
+
+// TODO: add support for multi-playlists.
+
 #include <windows.h>
 #include <tchar.h>
+
+#include <sstream>
 #include "svplwriter.h"
 
 namespace SVideoPlayer
@@ -88,4 +93,29 @@ namespace SVideoPlayer
 		ios::sync_with_stdio(true);
 		return 0;
 	}
+
+	BOOL svplwriter::GetPlaylistData(wstringstream& stream, const svpl * m_svpl)
+	{
+		stream << L"# DefaultPlaylist=" << m_svpl->config.normalplaylist << L"\n";
+		stream << L"# WindowAspectRatio=" << m_svpl->config.windowAspectRatio.x << L":" << m_svpl->config.windowAspectRatio.y << L"\n";
+
+#define ats(x) L" " _T(#x) L"=\"" << m_svpl->playlists.at(ip).x << L"\""
+#define atsi(x)  L" " _T(#x) L"=\"" << m_svpl->playlists.at(ip).items.at(ii).x << L"\""
+
+		for (unsigned int ip = 0; ip < m_svpl->playlists.size(); ip++)
+		{
+			stream << L"<playlist" << ats(currentindex) << ats(keepwidth) << ats(name) << ats(volume) << L">";
+			for (unsigned int ii = 0; ii < m_svpl->playlists.at(ip).items.size(); ii++)
+			{
+				stream << L"\n<item" << atsi(type) << atsi(path) << atsi(title) << atsi(volume) << atsi(begintime) << atsi(endtime) << hex << atsi(borderColor) << dec << L"/>";
+			}
+			stream << L"\n</playlist>\n";
+		}
+		return 0;
+	}
+
+#undef ats
+#undef atsi
+
+
 }
